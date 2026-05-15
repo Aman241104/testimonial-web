@@ -48,7 +48,7 @@ export function EditProfileModal({ user, isOpen, onClose }: EditProfileModalProp
       await updateProfile({ college, batchYear, bio });
       toast.success("Profile updated successfully!");
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Failed to update profile.");
     } finally {
       setIsLoading(false);

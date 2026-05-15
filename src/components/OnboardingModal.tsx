@@ -47,7 +47,7 @@ export function OnboardingModal({ isOpen, onClose, currentUser }: OnboardingModa
       });
       toast.success("Profile updated! Welcome to College Testimonials.");
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsSubmitting(false);

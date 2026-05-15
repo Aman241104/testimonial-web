@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { cn } from "@/lib/utils";
@@ -22,78 +22,77 @@ interface TestimonialCardProps {
 }
 
 const THEME_CLASSES: Record<string, string> = {
-  blue: "bg-blue-50 border-blue-100 text-blue-900 shadow-blue-50",
-  purple: "bg-purple-50 border-purple-100 text-purple-900 shadow-purple-50",
-  rose: "bg-rose-50 border-rose-100 text-rose-900 shadow-rose-50",
-  amber: "bg-amber-50 border-amber-100 text-amber-900 shadow-amber-50",
-  emerald: "bg-emerald-50 border-emerald-100 text-emerald-900 shadow-emerald-50",
+  blue: "from-blue-500/10 to-transparent",
+  purple: "from-purple-500/10 to-transparent",
+  rose: "from-rose-500/10 to-transparent",
+  amber: "from-amber-500/10 to-transparent",
+  emerald: "from-emerald-500/10 to-transparent",
 };
 
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   const toggleReaction = useMutation(api.testimonials.toggleReaction);
-  const themeClass = THEME_CLASSES[testimonial.theme || "blue"] || THEME_CLASSES.blue;
+  const themeGradient = THEME_CLASSES[testimonial.theme || "blue"] || THEME_CLASSES.blue;
   
-  // Create a stable random rotation based on ID
-  const rotation = (testimonial._id.charCodeAt(testimonial._id.length - 1) % 4) - 2;
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, rotate: rotation - 2 }}
-      animate={{ opacity: 1, y: 0, rotate: rotation }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="relative pt-6 group"
+      whileHover={{ y: -10 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative"
     >
-      <div 
-        className="washi-tape mix-blend-multiply dark:mix-blend-overlay opacity-60"
-        style={{ transform: `translateX(-50%) rotate(${rotation * 2 + 3}deg)` }}
-      />
-      <Card className={cn(
-        "overflow-hidden transition-all border-none shadow-[0_10px_40px_rgba(0,0,0,0.04)] dark:shadow-none rounded-[40px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:translate-y-[-4px] paper-grain relative",
-        themeClass
-      )}>
-        <div className="absolute top-0 right-0 p-12 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <Card className="overflow-hidden bg-white/50 dark:bg-white/1 backdrop-blur-3xl border border-white dark:border-white/5 rounded-[56px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] hover:shadow-[0_48px_80px_-24px_rgba(0,0,0,0.1)] transition-all duration-700">
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-1000", themeGradient)} />
         
-        <CardContent className="pt-12 pb-10 px-10 relative z-10">
-          <p className="leading-relaxed text-3xl font-handwriting text-balance">
+        <CardContent className="pt-20 pb-16 px-12 lg:px-20 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="absolute top-12 left-12 lg:left-20 text-primary opacity-20"
+          >
+            <Sparkles className="w-12 h-12" />
+          </motion.div>
+          
+          <p className="text-4xl lg:text-6xl font-serif italic text-slate-900 dark:text-white leading-[1.1] tracking-tight text-pretty">
             &quot;{testimonial.content}&quot;
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between items-center bg-white/40 dark:bg-black/20 backdrop-blur-md py-6 px-10 border-t border-black/5 dark:border-white/5 relative z-10">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border-2 border-white dark:border-slate-800 shadow-md">
+
+        <CardFooter className="flex justify-between items-center py-10 px-12 lg:px-20 border-t border-white dark:border-white/5 bg-white/20 dark:bg-white/2 backdrop-blur-2xl relative z-10">
+          <div className="flex items-center gap-6">
+            <Avatar className="h-16 w-16 border-4 border-white dark:border-slate-800 shadow-xl group-hover:scale-110 transition-transform duration-700">
               <AvatarImage src={testimonial.authorImage} />
-              <AvatarFallback className="font-black bg-white/50">{testimonial.authorName[0]}</AvatarFallback>
+              <AvatarFallback className="font-black bg-primary text-white">{testimonial.authorName[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight opacity-90">
+              <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 {testimonial.authorName}
               </span>
-              <span className="text-[11px] opacity-50 uppercase tracking-[0.2em] font-black">
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
                 {new Date(testimonial.createdAt).toLocaleDateString(undefined, {
-                  month: 'short',
-                  day: 'numeric',
+                  month: 'long',
                   year: 'numeric'
                 })}
               </span>
             </div>
           </div>
+
           <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.2, rotate: 15 }}
+            whileTap={{ scale: 0.8 }}
             onClick={() => toggleReaction({ id: testimonial._id })}
             className={cn(
-              "p-3.5 rounded-2xl transition-all shadow-sm",
+              "w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-500 shadow-lg",
               testimonial.isLiked
-                ? "text-red-500 bg-white dark:bg-slate-900 shadow-red-100 dark:shadow-none"
-                : "text-slate-400 hover:text-red-400 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10"
+                ? "bg-red-500 text-white shadow-red-200 dark:shadow-none"
+                : "bg-white/50 dark:bg-white/5 text-slate-400 hover:text-red-500 hover:bg-white dark:hover:bg-white/10"
             )}
           >
-            <Heart
-              className={cn("h-6 w-6 transition-all", testimonial.isLiked && "fill-current scale-110")}
-            />
+            <Heart className={cn("w-8 h-8 transition-transform", testimonial.isLiked && "fill-current")} />
           </motion.button>
         </CardFooter>
       </Card>
+      
+      {/* Dynamic Accent Decorative Element */}
+      <div className="absolute -z-10 -bottom-4 -right-4 w-full h-full bg-slate-100 dark:bg-white/2 rounded-[56px] scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-1000" />
     </motion.div>
   );
 }
