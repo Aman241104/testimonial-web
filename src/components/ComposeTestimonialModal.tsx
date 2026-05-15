@@ -19,7 +19,8 @@ import {
   Palette, 
   PenTool, 
   Eye,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,11 +34,11 @@ interface ComposeTestimonialModalProps {
 }
 
 const THEMES = [
-  { id: "blue", name: "Classic Blue", class: "bg-blue-50 border-blue-200 text-blue-900", accent: "bg-blue-600" },
-  { id: "purple", name: "Royal Purple", class: "bg-purple-50 border-purple-200 text-purple-900", accent: "bg-purple-600" },
-  { id: "rose", name: "Warm Rose", class: "bg-rose-50 border-rose-200 text-rose-900", accent: "bg-rose-600" },
-  { id: "amber", name: "Golden Amber", class: "bg-amber-50 border-amber-200 text-amber-900", accent: "bg-amber-600" },
-  { id: "emerald", name: "Deep Emerald", class: "bg-emerald-50 border-emerald-200 text-emerald-900", accent: "bg-emerald-600" },
+  { id: "blue", name: "Electric Blue", class: "from-blue-500/10 to-transparent border-blue-500/20 text-blue-900 dark:text-blue-100", accent: "bg-blue-500" },
+  { id: "purple", name: "Royal Purple", class: "from-purple-500/10 to-transparent border-purple-500/20 text-purple-900 dark:text-purple-100", accent: "bg-purple-500" },
+  { id: "rose", name: "Warm Rose", class: "from-rose-500/10 to-transparent border-rose-500/20 text-rose-900 dark:text-rose-100", accent: "bg-rose-500" },
+  { id: "amber", name: "Golden Amber", class: "from-amber-500/10 to-transparent border-amber-500/20 text-amber-900 dark:text-amber-100", accent: "bg-amber-500" },
+  { id: "emerald", name: "Deep Emerald", class: "from-emerald-500/10 to-transparent border-emerald-500/20 text-emerald-900 dark:text-emerald-100", accent: "bg-emerald-500" },
 ];
 
 const PROMPTS = [
@@ -89,33 +90,34 @@ export function ComposeTestimonialModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
-        <div className="flex flex-col h-[600px] sm:h-auto max-h-[90vh]">
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[40px] border-white/10 dark:border-white/5 shadow-2xl bg-[#020817]">
+        <div className="noise-overlay opacity-10" />
+        <div className="flex flex-col h-[600px] sm:h-auto max-h-[90vh] relative z-10">
           {/* Header */}
-          <DialogHeader className="p-6 bg-slate-50 border-b border-slate-100">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-12 w-12 border-2 border-white shadow-sm">
+          <DialogHeader className="p-8 border-b border-white/5">
+            <div className="flex items-center gap-5">
+              <Avatar className="h-14 w-14 border-2 border-white/20 shadow-xl">
                 <AvatarImage src={receiver?.imageUrl} />
-                <AvatarFallback>{receiver?.name?.[0]}</AvatarFallback>
+                <AvatarFallback className="font-serif font-black">{receiver?.name?.[0]}</AvatarFallback>
               </Avatar>
               <div>
-                <DialogTitle className="text-xl font-bold text-slate-900">
+                <DialogTitle className="text-2xl font-serif font-black text-white tracking-tight">
                   To {receiver?.name}
                 </DialogTitle>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-3 mt-1.5">
                   <div className="flex gap-1">
                     {[1, 2, 3].map((i) => (
                       <div 
                         key={i} 
                         className={cn(
-                          "h-1 w-8 rounded-full transition-colors",
-                          step >= i ? "bg-blue-600" : "bg-slate-200"
+                          "h-1 w-6 rounded-full transition-all duration-500",
+                          step >= i ? "bg-primary" : "bg-white/10"
                         )} 
                       />
                     ))}
                   </div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Step {step} of 3
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    Phase {step} of 3
                   </span>
                 </div>
               </div>
@@ -123,22 +125,22 @@ export function ComposeTestimonialModal({
           </DialogHeader>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto p-6 bg-white">
+          <div className="flex-1 overflow-y-auto p-8">
             <AnimatePresence mode="wait">
               {step === 1 && (
                 <motion.div
                   key="step1"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-8"
                 >
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <Palette className="h-4 w-4 text-blue-600" />
-                      Pick a Theme
+                    <label className="text-xs font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
+                      <Palette className="h-4 w-4" />
+                      Visual Identity
                     </label>
-                    <p className="text-sm text-slate-500">Choose how your message will look in their inbox.</p>
+                    <p className="text-sm text-slate-400 font-medium">Choose a theme that matches the mood of your story.</p>
                   </div>
                   <div className="grid grid-cols-1 gap-3">
                     {THEMES.map((t) => (
@@ -146,22 +148,26 @@ export function ComposeTestimonialModal({
                         key={t.id}
                         onClick={() => setTheme(t.id)}
                         className={cn(
-                          "flex items-center justify-between p-4 rounded-2xl border-2 transition-all group",
+                          "flex items-center justify-between p-4 rounded-2xl border-2 transition-all duration-500 group",
                           theme === t.id 
-                            ? "border-blue-600 bg-blue-50 shadow-md scale-[1.02]" 
-                            : "border-slate-100 hover:border-slate-200 bg-white"
+                            ? "border-primary bg-primary/5 shadow-xl scale-[1.02]" 
+                            : "border-white/5 hover:border-white/10 bg-white/2"
                         )}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={cn("w-4 h-4 rounded-full", t.accent)} />
+                        <div className="flex items-center gap-4">
+                          <div className={cn("w-5 h-5 rounded-full shadow-inner", t.accent)} />
                           <span className={cn(
-                            "font-semibold",
-                            theme === t.id ? "text-blue-700" : "text-slate-600"
+                            "font-bold tracking-tight text-lg",
+                            theme === t.id ? "text-white" : "text-slate-400 group-hover:text-slate-200"
                           )}>
                             {t.name}
                           </span>
                         </div>
-                        {theme === t.id && <CheckCircle2 className="h-5 w-5 text-blue-600" />}
+                        {theme === t.id && (
+                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                            <CheckCircle2 className="h-6 w-6 text-primary" />
+                          </motion.div>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -171,37 +177,38 @@ export function ComposeTestimonialModal({
               {step === 2 && (
                 <motion.div
                   key="step2"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-8"
                 >
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <PenTool className="h-4 w-4 text-blue-600" />
-                      Write Your Message
+                  <div className="space-y-3">
+                    <label className="text-xs font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
+                      <PenTool className="h-4 w-4" />
+                      The Narrative
                     </label>
-                    <div className="flex flex-wrap gap-2 pt-1">
+                    <div className="flex flex-wrap gap-2">
                       {PROMPTS.map((p, i) => (
                         <button
                           key={i}
                           onClick={() => setContent(p + " ")}
-                          className="text-[10px] px-3 py-1.5 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-full border border-slate-100 hover:border-blue-200 transition-colors"
+                          className="text-[10px] px-3 py-1.5 bg-white/5 hover:bg-primary/20 text-slate-400 hover:text-white rounded-full border border-white/5 hover:border-primary/30 transition-all font-bold"
                         >
                           {p}
                         </button>
                       ))}
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-transparent rounded-3xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                     <Textarea
-                      placeholder="Write something heartfelt..."
-                      className="min-h-[200px] text-lg p-4 rounded-2xl border-slate-200 focus:ring-blue-500 resize-none italic"
+                      placeholder="Share a defining moment..."
+                      className="relative min-h-[220px] text-xl p-6 rounded-3xl border-white/5 bg-white/2 focus:ring-primary focus:border-primary resize-none italic font-medium placeholder:text-slate-600 text-white"
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                     />
-                    <div className="absolute bottom-3 right-3 text-[10px] font-bold text-slate-400">
-                      {content.length} characters
+                    <div className="absolute bottom-4 right-6 text-[10px] font-black text-slate-500 tracking-widest">
+                      {content.length} CHARS
                     </div>
                   </div>
                 </motion.div>
@@ -210,25 +217,27 @@ export function ComposeTestimonialModal({
               {step === 3 && (
                 <motion.div
                   key="step3"
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  className="space-y-6"
+                  className="space-y-8"
                 >
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-blue-600" />
-                      Final Preview
+                    <label className="text-xs font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
+                      <Eye className="h-4 w-4" />
+                      The Preview
                     </label>
-                    <p className="text-sm text-slate-500">Here&apos;s how it will appear to {receiver?.name}.</p>
+                    <p className="text-sm text-slate-400 font-medium">Behold your message before it joins the Archive.</p>
                   </div>
                   
                   <div className={cn(
-                    "p-8 rounded-3xl border-2 shadow-sm min-h-[200px] flex items-center justify-center text-center paper-grain",
+                    "p-10 rounded-[40px] border-2 shadow-2xl min-h-[250px] flex items-center justify-center text-center relative overflow-hidden group bg-gradient-to-br",
                     currentTheme.class
                   )}>
-                    <p className="text-xl italic font-serif leading-relaxed">
-                      &quot;{content || "Your message here..."}&quot;
+                    <div className="absolute top-4 left-6 text-primary opacity-20">
+                      <Sparkles className="h-10 w-10" />
+                    </div>
+                    <p className="text-3xl font-serif italic leading-tight text-pretty relative z-10">
+                      &ldquo;{content || "Your legacy here..."}&quot;
                     </p>
                   </div>
                 </motion.div>
@@ -237,35 +246,35 @@ export function ComposeTestimonialModal({
           </div>
 
           {/* Footer */}
-          <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
+          <div className="p-8 border-t border-white/5 flex items-center gap-4">
             {step > 1 && (
               <Button
                 variant="outline"
-                className="rounded-2xl h-12 px-6"
+                className="rounded-full h-14 px-8 border-white/10 text-slate-400 hover:text-white hover:bg-white/5 font-bold"
                 onClick={() => setStep(step - 1)}
               >
-                <ChevronLeft className="h-4 w-4 mr-2" />
+                <ChevronLeft className="h-5 w-5 mr-2" />
                 Back
               </Button>
             )}
             
             {step < 3 ? (
               <Button
-                className="flex-1 rounded-2xl h-12 bg-blue-600 hover:bg-blue-700 font-bold"
+                className="flex-1 rounded-full h-14 bg-primary hover:bg-primary/90 text-white font-black text-lg shadow-xl shadow-primary/20 glow-primary-subtle"
                 onClick={() => setStep(step + 1)}
                 disabled={step === 2 && !content.trim()}
               >
-                Next Step
-                <ChevronRight className="h-4 w-4 ml-2" />
+                Continue
+                <ChevronRight className="h-5 w-5 ml-2" />
               </Button>
             ) : (
               <Button
-                className="flex-1 rounded-2xl h-12 bg-blue-600 hover:bg-blue-700 font-bold shadow-lg shadow-blue-200"
+                className="flex-1 rounded-full h-14 bg-primary hover:bg-primary/90 text-white font-black text-lg shadow-2xl shadow-primary/40 glow-primary-subtle"
                 onClick={handleSubmit}
                 disabled={isSending || !content.trim()}
               >
-                {isSending ? "Sending..." : "Send Testimonial"}
-                <Send className="h-4 w-4 ml-2" />
+                {isSending ? "Archiving..." : "Commit to Vault"}
+                <Send className="h-5 w-5 ml-2" />
               </Button>
             )}
           </div>

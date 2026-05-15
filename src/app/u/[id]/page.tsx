@@ -8,10 +8,9 @@ import { ComposeTestimonialModal } from "@/components/ComposeTestimonialModal";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Heart, Sparkles, ArrowLeft } from "lucide-react";
+import { MessageSquare, Heart, Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
 
 export default function PublicProfile() {
   const params = useParams();
@@ -24,93 +23,134 @@ export default function PublicProfile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[#020817]">
+        <div className="noise-overlay" />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="bg-primary p-6 rounded-3xl shadow-2xl"
+        >
+          <MessageSquare className="w-12 h-12 text-white" />
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col items-center p-6 pt-12">
-      <div className="max-w-md w-full space-y-8">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="rounded-full text-slate-500 hover:text-slate-900"
-          onClick={() => router.push("/")}
+    <main className="min-h-screen bg-[#fafafa] dark:bg-[#020817] transition-colors duration-1000 relative overflow-hidden flex flex-col items-center p-6 pt-12 lg:pt-24">
+      <div className="noise-overlay" />
+      
+      {/* Immersive Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] lg:w-[50%] lg:h-[50%] bg-primary/10 rounded-full blur-[160px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] lg:w-[40%] lg:h-[40%] bg-indigo-500/10 rounded-full blur-[140px] animate-pulse [animation-delay:3s]" />
+      </div>
+
+      <div className="max-w-2xl w-full space-y-12 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back home
-        </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white group"
+            onClick={() => router.push("/")}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Explore Capsule.
+          </Button>
+        </motion.div>
 
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-[40px] p-10 shadow-xl shadow-blue-100/50 border border-slate-100 text-center space-y-6 relative overflow-hidden"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="glass-awwwards rounded-[64px] p-8 lg:p-16 border border-white/20 dark:border-white/5 text-center space-y-8 relative overflow-hidden"
         >
-          {/* Decorative background elements */}
-          <div className="absolute top-0 right-0 p-4 opacity-5">
-            <MessageSquare className="h-32 w-32 rotate-12" />
-          </div>
+          <div className="absolute top-0 right-0 p-24 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           
           <div className="relative flex justify-center">
-            <div className="absolute inset-0 bg-blue-100 rounded-full blur-2xl opacity-20 animate-pulse" />
-            <Avatar className="h-32 w-32 border-4 border-white shadow-xl relative z-10">
+            <Avatar className="h-40 w-40 lg:h-56 lg:w-56 border-8 border-white dark:border-slate-800 shadow-2xl relative z-10 hover:scale-105 transition-transform duration-700">
               <AvatarImage src={user.imageUrl} />
-              <AvatarFallback className="text-4xl font-black bg-blue-50 text-blue-600">
+              <AvatarFallback className="text-5xl lg:text-7xl font-serif font-black bg-primary text-white">
                 {user.name[0]}
               </AvatarFallback>
             </Avatar>
+            <div className="absolute -bottom-4 -right-4 bg-primary p-4 rounded-3xl shadow-2xl text-white z-20 animate-bounce [animation-duration:3s]">
+              <Sparkles className="h-8 w-8" />
+            </div>
           </div>
 
-          <div className="space-y-2 relative z-10">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <div className="space-y-4 relative z-10">
+            <h1 className="text-5xl lg:text-7xl font-serif font-black text-slate-900 dark:text-white tracking-tighter leading-tight">
               {user.name}
             </h1>
-            <p className="text-lg font-semibold text-blue-600">
-              {user.college} {user.batchYear && `\u0027${user.batchYear.slice(-2)}`}
-            </p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="bg-primary/10 px-4 py-1.5 rounded-full text-primary font-black uppercase tracking-widest text-[10px] lg:text-xs backdrop-blur-md border border-primary/20">
+                {user.college}
+              </span>
+              {user.batchYear && (
+                <span className="bg-slate-100 dark:bg-white/5 px-4 py-1.5 rounded-full text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px] lg:text-xs border border-slate-200 dark:border-white/5">
+                  Class of &apos;{user.batchYear.slice(-2)}
+                </span>
+              )}
+            </div>
             {user.bio && (
-              <p className="text-slate-500 italic max-w-xs mx-auto pt-2">
-                &quot;{user.bio}&quot;
+              <p className="text-xl lg:text-2xl text-slate-500 dark:text-slate-400 italic max-w-md mx-auto pt-4 leading-relaxed font-medium">
+                &ldquo;{user.bio}&rdquo;
               </p>
             )}
           </div>
 
-          <div className="pt-6 relative z-10">
+          <div className="pt-8 relative z-10 max-w-md mx-auto">
             {isSignedIn ? (
-              <Button 
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsWriting(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 py-8 rounded-3xl text-xl font-bold shadow-lg shadow-blue-200 group transition-all hover:scale-[1.02] active:scale-95"
+                className="w-full bg-primary text-white py-6 rounded-[32px] text-xl font-black shadow-2xl shadow-primary/30 flex items-center justify-center group glow-primary-subtle"
               >
                 Write a Testimonial
-                <Sparkles className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform" />
-              </Button>
+                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+              </motion.button>
             ) : (
               <SignInButton mode="modal">
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 py-8 rounded-3xl text-xl font-bold shadow-lg shadow-blue-200 transition-all hover:scale-[1.02] active:scale-95"
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-primary text-white py-6 rounded-[32px] text-xl font-black shadow-2xl shadow-primary/30 glow-primary-subtle"
                 >
-                  Sign in to write
-                </Button>
+                  Join to Contribute
+                </motion.button>
               </SignInButton>
             )}
-            <p className="text-xs text-slate-400 mt-4 font-medium flex items-center justify-center gap-1">
-              <Heart className="h-3 w-3 fill-red-400 text-red-400" />
-              Only {user.name} will see your message
+            <p className="text-[10px] lg:text-xs text-slate-400 mt-6 font-black uppercase tracking-[0.3em] flex items-center justify-center gap-2">
+              <Heart className="h-3 w-3 fill-red-500 text-red-500" />
+              Direct to Vault &bull; Highly Encrypted
             </p>
           </div>
         </motion.div>
 
-        <div className="text-center space-y-4 pt-4">
-          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-            What is this?
-          </p>
-          <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 border border-slate-100 text-sm text-slate-600 leading-relaxed">
-            College Testimonials is a private way to share memories with your friends. 
-            Write something heartfelt, funny, or nostalgic&mdash;it&apos;s a digital yearbook for the phone generation.
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center space-y-6 pt-4"
+        >
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-[1px] w-12 bg-slate-200 dark:bg-white/10" />
+            <p className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">
+              About the Vault
+            </p>
+            <div className="h-[1px] w-12 bg-slate-200 dark:bg-white/10" />
           </div>
-        </div>
+          <div className="glass-awwwards rounded-[40px] p-8 lg:p-10 border border-white/10 text-sm lg:text-lg text-slate-500 dark:text-slate-400 leading-relaxed font-medium text-balance">
+            College Capsule is a high-fidelity digital time capsule. 
+            We preserve the stories, memories, and nostalgia that defined your college years in a private, secure vault. 
+            One link, forever preserved.
+          </div>
+        </motion.div>
       </div>
 
       <ComposeTestimonialModal
