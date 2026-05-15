@@ -85,7 +85,7 @@ export function Dashboard() {
           </div>
 
           {/* Sidebar - Desktop Only */}
-          <aside className="hidden lg:flex w-24 xl:w-80 h-screen sticky top-0 flex-col py-12 px-6 z-50 bg-white/50 dark:bg-white/1 backdrop-blur-3xl border-r border-white dark:border-white/5">
+          <aside className="hidden lg:flex w-24 xl:w-80 h-screen sticky top-0 flex-col py-12 px-6 z-50 bg-white/50 dark:bg-[#020817] border-r border-white dark:border-white/5">
             <div className="flex items-center gap-4 mb-20 justify-center xl:justify-start">
               <div className="bg-primary p-3 rounded-2xl shadow-xl rotate-[-10deg] hover:rotate-0 transition-transform duration-500 cursor-pointer">
                 <MessageSquare className="h-6 w-6 text-white" />
@@ -105,17 +105,14 @@ export function Dashboard() {
                   key={item.id}
                   onClick={() => setActiveTab(item.id as "inbox" | "friends" | "profile")}
                   className={cn(
-                    "relative group flex items-center gap-4 p-4 rounded-2xl transition-all duration-500",
+                    "relative group flex items-center gap-4 p-4 rounded-2xl transition-all duration-300",
                     activeTab === item.id 
-                      ? "bg-primary text-white shadow-2xl shadow-primary/40 glow-primary-subtle" 
+                      ? "bg-primary text-white shadow-xl shadow-primary/40" 
                       : "text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
                   )}
                 >
-                  <item.icon className="h-6 w-6" />
+                  <item.icon className="h-6 w-6 shrink-0" />
                   <span className="hidden xl:block font-bold tracking-tight">{item.label}</span>
-                  {activeTab === item.id && (
-                    <motion.div layoutId="nav-pill" className="absolute inset-0 bg-primary rounded-2xl -z-10" />
-                  )}
                 </button>
               ))}
             </nav>

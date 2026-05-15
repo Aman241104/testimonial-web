@@ -93,11 +93,17 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 transition-colors duration-300;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/30;
     padding-bottom: env(safe-area-inset-bottom);
+    cursor: default !important;
+  }
+  
+  /* Ensure interactive elements have pointers */
+  a, button, [role="button"], .cursor-pointer {
+    cursor: pointer !important;
   }
 }
 
