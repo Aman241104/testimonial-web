@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
-import { UserButton } from "@clerk/nextjs";
 import { api } from "../../convex/_generated/api";
 import { MessageSquare, Share2, Sparkles, Users, UserCircle, Settings } from "lucide-react";
 import { TestimonialCard } from "./TestimonialCard";
@@ -125,13 +124,21 @@ export function Dashboard() {
                 <Settings className="h-6 w-6 hover:rotate-90 transition-transform duration-500" />
                 <span className="hidden xl:block font-bold tracking-tight">Settings</span>
               </button>
-              <div className="p-2 xl:p-4 bg-white dark:bg-white/5 rounded-3xl border border-white dark:border-white/5 shadow-sm flex items-center gap-3">
-                <div className="scale-110"><UserButton /></div>
-                <div className="hidden xl:flex flex-col min-w-0">
+              
+              {/* Unified Profile Trigger */}
+              <button 
+                onClick={() => setIsEditingProfile(true)}
+                className="p-2 xl:p-4 bg-white dark:bg-white/5 rounded-3xl border border-white dark:border-white/5 shadow-sm flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 transition-all group"
+              >
+                <Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800 shadow-md group-hover:scale-110 transition-transform">
+                  <AvatarImage src={me.imageUrl} />
+                  <AvatarFallback className="font-serif font-black bg-primary text-white">{me.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="hidden xl:flex flex-col text-left min-w-0">
                   <span className="text-xs font-black text-slate-900 dark:text-white truncate">{me.name}</span>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{me.college || 'Alumni'}</span>
                 </div>
-              </div>
+              </button>
             </div>
           </aside>
 
@@ -157,7 +164,17 @@ export function Dashboard() {
                   </Button>
                 </motion.div>
                 <ThemeToggle />
-                <div className="lg:hidden scale-110"><UserButton /></div>
+                
+                {/* Mobile Identity Trigger */}
+                <button 
+                  onClick={() => setIsEditingProfile(true)}
+                  className="lg:hidden"
+                >
+                  <Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800 shadow-md">
+                    <AvatarImage src={me.imageUrl} />
+                    <AvatarFallback className="font-serif font-black bg-primary text-white">{me.name[0]}</AvatarFallback>
+                  </Avatar>
+                </button>
               </div>
             </header>
 
