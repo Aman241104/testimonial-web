@@ -15,11 +15,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { Doc } from "../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 interface EditProfileModalProps {
-  user: any;
+  user: Doc<"users"> | undefined;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -33,6 +34,7 @@ export function EditProfileModal({ user, isOpen, onClose }: EditProfileModalProp
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCollege(user.college || "");
       setBatchYear(user.batchYear || "");
       setBio(user.bio || "");

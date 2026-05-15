@@ -24,9 +24,10 @@ import {
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Doc } from "../../convex/_generated/dataModel";
 
 interface ComposeTestimonialModalProps {
-  receiver: any;
+  receiver: Doc<"users"> | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -59,18 +60,19 @@ export function ComposeTestimonialModal({
   const [isSending, setIsSending] = useState(false);
 
   const handleSubmit = async () => {
-    if (!content.trim()) return;
+    const r = receiver;
+    if (!content.trim() || !r) return;
     setIsSending(true);
     try {
       await sendTestimonial({
-        receiverId: receiver.tokenIdentifier,
+        receiverId: r.tokenIdentifier,
         content: content.trim(),
         theme,
       });
-      toast.success(`Message sent to ${receiver.name}!`);
+      toast.success(`Message sent to ${r.name}!`);
       handleClose();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to send message");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to send message");
     } finally {
       setIsSending(false);
     }
@@ -218,7 +220,7 @@ export function ComposeTestimonialModal({
                       <Eye className="h-4 w-4 text-blue-600" />
                       Final Preview
                     </label>
-                    <p className="text-sm text-slate-500">Here&apos;s how it will appear to {receiver.name}.</p>
+                    <p className="text-sm text-slate-500">Here&apos;s how it will appear to {receiver?.name}.</p>
                   </div>
                   
                   <div className={cn(

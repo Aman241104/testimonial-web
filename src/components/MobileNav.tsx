@@ -18,52 +18,52 @@ export function MobileNav({ activeTab, onTabChange, onShare }: MobileNavProps) {
   ] as const;
 
   return (
-    <div className="sm:hidden fixed bottom-6 left-6 right-6 z-50">
-      <div className="glass-dark rounded-[32px] p-2 flex items-center justify-between shadow-2xl border-white/10 relative overflow-hidden">
+    <div className="sm:hidden fixed bottom-8 left-8 right-8 z-50">
+      <div className="bg-slate-900/80 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[32px] p-2.5 flex items-center justify-between shadow-2xl border border-white/10 relative overflow-hidden">
         {/* Active Tab Background "Pill" */}
-        <div className="absolute inset-0 p-2 flex pointer-events-none">
+        <div className="absolute inset-0 p-2.5 flex pointer-events-none">
           <div className="w-full h-full relative flex">
-            {tabs.map((tab, idx) => (
+            {tabs.map((tab) => (
               <div key={`pill-${tab.id}`} className="flex-1 h-full relative">
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="activePill"
-                    className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/20"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 bg-primary rounded-2xl shadow-lg shadow-primary/40"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
                   />
                 )}
               </div>
             ))}
-            <div className="w-[56px]" /> {/* Spacer for share button */}
+            <div className="w-[60px]" /> {/* Spacer for share button */}
           </div>
         </div>
 
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
-          
+
           return (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "flex-1 flex flex-col items-center gap-1 py-3 transition-all relative z-10",
-                isActive ? "text-primary scale-105" : "text-slate-400"
+                "flex-1 relative z-10 py-3 flex flex-col items-center justify-center gap-1 transition-colors duration-300",
+                isActive ? "text-white" : "text-slate-400"
               )}
             >
-              <Icon className={cn("h-6 w-6", isActive && "fill-primary/10")} />
-              <span className="text-[10px] font-bold tracking-tight uppercase">
-                {tab.label}
-              </span>
+              <Icon className={cn("h-5 w-5", isActive ? "scale-110" : "scale-100")} />
+              <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
             </button>
           );
         })}
-        
+
+        <div className="w-[1px] h-8 bg-white/10 mx-1" />
+
         <button
           onClick={onShare}
-          className="bg-primary p-4 rounded-2xl shadow-lg shadow-primary/20 active:scale-90 transition-all z-10"
+          className="w-[60px] h-[60px] flex items-center justify-center relative z-10 text-white bg-white/10 rounded-2xl hover:bg-white/20 active:scale-90 transition-all"
         >
-          <Share2 className="h-6 w-6 text-white" />
+          <Share2 className="h-6 w-6" />
         </button>
       </div>
     </div>

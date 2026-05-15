@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Doc } from "../../convex/_generated/dataModel";
 
 interface UserDirectoryProps {
-  users: any[];
-  currentUser: any;
-  onSelectUser: (user: any) => void;
+  users: Doc<"users">[];
+  currentUser: Doc<"users"> | undefined;
+  onSelectUser: (user: Doc<"users">) => void;
 }
 
 export function UserDirectory({ users, currentUser, onSelectUser }: UserDirectoryProps) {
@@ -25,63 +26,73 @@ export function UserDirectory({ users, currentUser, onSelectUser }: UserDirector
   );
 
   return (
-    <Card className="h-full border-slate-200 shadow-sm rounded-3xl overflow-hidden border-none sm:border">
-      <CardHeader className="pb-4 bg-slate-50/50">
-        <div className="hidden sm:flex items-center gap-2 mb-4">
-          <div className="bg-blue-100 p-2 rounded-xl">
-            <Users className="h-5 w-5 text-blue-600" />
+    <Card className="h-full border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none bg-white/50 dark:bg-slate-900/40 backdrop-blur-xl rounded-[40px] overflow-hidden transition-all duration-500">
+      <CardHeader className="pb-6 pt-8 px-8 bg-slate-50/50 dark:bg-slate-800/30">
+        <div className="hidden sm:flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2.5 rounded-2xl">
+              <Users className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle className="text-2xl font-black tracking-tight">Directory</CardTitle>
           </div>
-          <CardTitle className="text-xl font-bold">Find Friends</CardTitle>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full shadow-sm">
+            {filteredUsers?.length} Active
+          </span>
         </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <div className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
           <Input
-            placeholder="Search name, college, or year..."
-            className="pl-9 bg-white border-slate-200 focus:ring-blue-500 rounded-xl transition-all h-12 sm:h-10"
+            placeholder="Search friends, college..."
+            className="pl-12 bg-white dark:bg-slate-900 border-none shadow-sm focus:ring-2 focus:ring-primary/20 rounded-2xl transition-all h-14 text-lg font-medium placeholder:text-slate-400"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </CardHeader>
-      <CardContent className="pt-6">
-        <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+      <CardContent className="pt-6 px-4">
+        <div className="space-y-3 max-h-[600px] overflow-y-auto px-4 custom-scrollbar pb-6">
           <AnimatePresence mode="popLayout">
             {filteredUsers?.length === 0 ? (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-12 text-slate-500 text-sm"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-16 text-slate-500"
               >
-                <div className="bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Search className="h-6 w-6 text-slate-300" />
+                <div className="bg-slate-50 dark:bg-slate-800/50 w-20 h-20 rounded-[32px] flex items-center justify-center mx-auto mb-6 shadow-sm">
+                  <Search className="h-10 w-10 text-slate-200" />
                 </div>
-                No friends found matching &quot;{searchTerm}&quot;
+                <p className="font-bold text-lg text-slate-400">No matches found</p>
+                <p className="text-sm opacity-60 px-8">Try searching for a name, college, or graduation year.</p>
               </motion.div>
             ) : (
               filteredUsers?.map((user) => (
                 <motion.div
                   key={user._id}
                   layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="p-4 border border-slate-100 bg-white hover:border-blue-200 hover:bg-blue-50/30 rounded-2xl cursor-pointer transition-all group flex items-center gap-4 shadow-sm hover:shadow-md"
+                  whileHover={{ x: 4 }}
+                  className="p-5 bg-white dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800/50 hover:border-primary/20 rounded-3xl cursor-pointer transition-all duration-300 group flex items-center gap-5 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-xl hover:shadow-primary/5"
                   onClick={() => onSelectUser(user)}
                 >
-                  <Avatar className="h-12 w-12 border-2 border-white shadow-sm group-hover:border-blue-200 transition-colors">
-                    <AvatarImage src={user.imageUrl} />
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-14 w-14 border-2 border-white dark:border-slate-700 shadow-md group-hover:border-primary/40 transition-all duration-500 scale-100 group-hover:scale-105">
+                      <AvatarImage src={user.imageUrl} />
+                      <AvatarFallback className="font-black text-xl">{user.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-4 border-white dark:border-slate-800 rounded-full" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate-900 truncate group-hover:text-blue-700 transition-colors">
+                    <p className="font-black text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors text-lg tracking-tight">
                       {user.name}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs text-slate-500 truncate">
-                        {user.college || "No college set"}
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs font-bold text-slate-400 truncate uppercase tracking-wider">
+                        {user.college || "Alumni"}
                       </p>
                       {user.batchYear && (
-                        <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-bold">
+                        <span className="text-[10px] px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg font-black tracking-tighter">
                           &apos;{user.batchYear.slice(-2)}
                         </span>
                       )}

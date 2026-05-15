@@ -16,11 +16,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Building2, UserCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Doc } from "../../convex/_generated/dataModel";
 
 interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentUser: any;
+  currentUser: Doc<"users"> | undefined;
 }
 
 export function OnboardingModal({ isOpen, onClose, currentUser }: OnboardingModalProps) {
