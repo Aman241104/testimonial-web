@@ -100,11 +100,11 @@ export function LandingPage() {
             </motion.span>
           </div>
 
-          <div className="space-y-4 mb-12">
+          <div className="space-y-2 lg:space-y-4 mb-12">
             <div className="reveal-text overflow-hidden">
               <motion.h1 
                 variants={titleReveal}
-                className="text-7xl md:text-[12rem] font-serif italic tracking-tighter leading-[0.8] text-slate-900 dark:text-white"
+                className="text-5xl md:text-[12rem] font-serif italic tracking-tighter leading-[0.8] text-slate-900 dark:text-white"
               >
                 Capture the
               </motion.h1>
@@ -112,7 +112,7 @@ export function LandingPage() {
             <div className="reveal-text overflow-hidden">
               <motion.h1 
                 variants={titleReveal}
-                className="text-7xl md:text-[12rem] font-serif font-black tracking-tighter leading-[0.8] text-slate-900 dark:text-white"
+                className="text-5xl md:text-[12rem] font-serif font-black tracking-tighter leading-[0.8] text-slate-900 dark:text-white"
               >
                 Memories.
               </motion.h1>

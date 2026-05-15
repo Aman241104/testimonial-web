@@ -2,7 +2,7 @@
 
 import { MessageSquare, Users, User, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface MobileNavProps {
   activeTab: "inbox" | "friends" | "profile";
@@ -12,60 +12,72 @@ interface MobileNavProps {
 
 export function MobileNav({ activeTab, onTabChange, onShare }: MobileNavProps) {
   const tabs = [
-    { id: "inbox", label: "Inbox", icon: MessageSquare },
-    { id: "friends", label: "Friends", icon: Users },
-    { id: "profile", label: "Profile", icon: User },
+    { id: "inbox", label: "Vault", icon: MessageSquare },
+    { id: "friends", label: "Social", icon: Users },
+    { id: "profile", label: "Me", icon: User },
   ] as const;
 
   return (
-    <div className="sm:hidden fixed bottom-8 left-8 right-8 z-50">
-      <div className="bg-slate-900/80 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[32px] p-2.5 flex items-center justify-between shadow-2xl border border-white/10 relative overflow-hidden">
-        {/* Active Tab Background "Pill" */}
-        <div className="absolute inset-0 p-2.5 flex pointer-events-none">
-          <div className="w-full h-full relative flex">
-            {tabs.map((tab) => (
-              <div key={`pill-${tab.id}`} className="flex-1 h-full relative">
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="activePill"
-                    className="absolute inset-0 bg-primary rounded-2xl shadow-lg shadow-primary/40"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-              </div>
-            ))}
-            <div className="w-[60px]" /> {/* Spacer for share button */}
+    <div className="lg:hidden fixed bottom-6 left-0 right-0 z-[100] px-6 pointer-events-none">
+      <motion.div 
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="max-w-md mx-auto pointer-events-auto"
+      >
+        <div className="bg-[#020817]/80 backdrop-blur-3xl rounded-[40px] p-2 flex items-center gap-1 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] border border-white/10 ring-1 ring-white/5">
+          <div className="flex-1 flex items-center gap-1">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className="relative flex-1 group"
+                >
+                  <div className={cn(
+                    "relative z-10 flex flex-col items-center justify-center py-4 rounded-[32px] transition-all duration-500",
+                    isActive ? "text-white" : "text-slate-500"
+                  )}>
+                    <Icon className={cn("h-5 w-5 mb-1 transition-transform duration-500", isActive && "scale-110")} />
+                    <span className={cn(
+                      "text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500",
+                      isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 hidden"
+                    )}>
+                      {tab.label}
+                    </span>
+                  </div>
+                  
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        layoutId="mobileActiveTab"
+                        className="absolute inset-0 bg-primary rounded-[32px] shadow-[0_0_20px_rgba(var(--primary),0.3)] glow-primary-subtle"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </AnimatePresence>
+                </button>
+              );
+            })}
           </div>
+
+          <div className="w-[1px] h-8 bg-white/10 mx-1" />
+
+          <motion.button
+            whileTap={{ scale: 0.9, rotate: -5 }}
+            onClick={onShare}
+            className="w-14 h-14 flex items-center justify-center bg-white/5 rounded-[32px] text-primary border border-white/10 hover:bg-white/10 transition-all group"
+          >
+            <Share2 className="h-5 w-5 group-hover:scale-110 transition-transform" />
+          </motion.button>
         </div>
-
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={cn(
-                "flex-1 relative z-10 py-3 flex flex-col items-center justify-center gap-1 transition-colors duration-300",
-                isActive ? "text-white" : "text-slate-400"
-              )}
-            >
-              <Icon className={cn("h-5 w-5", isActive ? "scale-110" : "scale-100")} />
-              <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
-            </button>
-          );
-        })}
-
-        <div className="w-[1px] h-8 bg-white/10 mx-1" />
-
-        <button
-          onClick={onShare}
-          className="w-[60px] h-[60px] flex items-center justify-center relative z-10 text-white bg-white/10 rounded-2xl hover:bg-white/20 active:scale-90 transition-all"
-        >
-          <Share2 className="h-6 w-6" />
-        </button>
-      </div>
+      </motion.div>
     </div>
   );
 }
+

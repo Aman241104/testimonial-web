@@ -4,7 +4,6 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { CustomCursor } from "@/components/CustomCursor";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
